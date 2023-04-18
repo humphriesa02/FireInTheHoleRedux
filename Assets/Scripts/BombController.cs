@@ -56,7 +56,7 @@ public class BombController : MonoBehaviour
             power = Mathf.Clamp(dragPercentage * powerMultiplier, 0f, maxPower);
 
             lineRenderer.enabled = true;
-            lineRenderer.SetPosition(0, new Vector2(transform.position.x, transform.position.y + 0.2f));
+            lineRenderer.SetPosition(0, transform.position);
             lineRenderer.SetPosition(1, transform.position + (dragStartPosition - dragEndPosition).normalized * dragDistance / maxDragDistance);
         }
 
