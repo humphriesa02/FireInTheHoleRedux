@@ -6,6 +6,8 @@ public class BombController : MonoBehaviour
 {
     public float powerMultiplier = 10f; // The multiplier for the power of the shot
     public float maxPower = 100f; // The maximum power of the shot
+    public float delayBetweenLives = 3;
+    private bool delayingReset;
 
     private Rigidbody2D rb; // The Rigidbody2D component of the bomb
     private Animator anim;
@@ -18,26 +20,32 @@ public class BombController : MonoBehaviour
 
     public LineRenderer lineRenderer;
 
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        delayingReset = false;
     }
 
     void Update()
     {
-        if(Vector2.Distance(rb.velocity, Vector2.zero) > 0.7f)
+        if(Vector2.Distance(rb.velocity, Vector2.zero) > 0.7f) // Bomb is moving
         {
             isMoving = true;
             rb.freezeRotation = true;
         }
-        else if(Vector2.Distance(rb.velocity, Vector2.zero) <= 0.7f)
+        else if(Vector2.Distance(rb.velocity, Vector2.zero) <= 0.7f) // Bomb is stopped
         {
             isMoving = false;
             rb.velocity = Vector2.zero;
+            if (!delayingReset)
+            {
+                SceneManager.instance.DecrementClock();
+            }
         }
 
-        if (Input.GetMouseButtonDown(0) && !isMoving)
+        if (Input.GetMouseButtonDown(0) && !isMoving && !delayingReset)
         {
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 
@@ -53,29 +61,75 @@ public class BombController : MonoBehaviour
             dragEndPosition = Input.mousePosition;
             float dragDistance = Vector3.Distance(dragStartPosition, dragEndPosition);
             float dragPercentage = dragDistance / maxDragDistance;
+            print(dragPercentage);
             power = Mathf.Clamp(dragPercentage * powerMultiplier, 0f, maxPower);
+            //print(power);
 
             lineRenderer.enabled = true;
             lineRenderer.SetPosition(0, transform.position);
-            lineRenderer.SetPosition(1, transform.position + (dragStartPosition - dragEndPosition).normalized * dragDistance / maxDragDistance);
+            float maxDistance = 0.5f * ((power / maxPower) * maxDragDistance);
+            print(maxDistance);
+            Vector3 direction = (dragStartPosition - dragEndPosition).normalized;
+            Vector3 secondPos = transform.position + direction * Mathf.Clamp(dragDistance, 0, maxDistance);
+            print(secondPos);
+            lineRenderer.SetPosition(1, secondPos);
         }
 
         if (Input.GetMouseButtonUp(0) && isDragging)
         {
             isDragging = false;
             lineRenderer.enabled = false;
-            Vector2 direction = (dragStartPosition - dragEndPosition).normalized;
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-            print(power);
-            rb.AddForce(direction * power);
+            HitBomb();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && !delayingReset)
+        {
+            BlowUp();
         }
 
         SetAnimation();
     }
 
+    void HitBomb()
+    {
+        SceneManager.instance.currentDurability--;
+        SceneManager.instance.sceneDurability++;
+        if(SceneManager.instance.currentDurability < 0)
+        {
+            BlowUp();
+        }
+        else
+        {
+            Vector2 direction = (dragStartPosition - dragEndPosition).normalized;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            rb.AddForce(direction * power);
+        }
+    }
+
     void SetAnimation()
     {
         anim.SetFloat("total_vel", Mathf.Abs(rb.velocity.x + rb.velocity.y));
+    }
+
+    public void BlowUp()
+    {
+        // Play blowup sound
+        // Show explosion animation
+        // Decrement scene totalLives
+        // Reset position
+        rb.velocity = Vector2.zero;
+        StartCoroutine(WaitToReset());
+    }
+
+    private IEnumerator WaitToReset()
+    {
+        delayingReset = true;
+        anim.Play("Explosion");
+        yield return new WaitForSeconds(delayBetweenLives);
+        SceneManager.instance.LoseLife();
+        delayingReset = false;
+        anim.Play("BombIdle");
+        StopCoroutine(WaitToReset());
     }
 }
