@@ -17,6 +17,8 @@ public class SceneManager : MonoBehaviour
     [HideInInspector] public int sceneDurability;
     [HideInInspector] public int sceneLives;
 
+    [HideInInspector] public bool sceneOver;
+
     public Vector2 maxSceneBounds;
     public Vector2 minSceneBounds;
     public Vector2 ballStartPosition;
@@ -41,6 +43,7 @@ public class SceneManager : MonoBehaviour
         currentLives = maxLives;
         lastTime = Time.time;
         bomb = GameObject.FindGameObjectWithTag("Player").GetComponent<BombController>();
+        sceneOver = false;
     }
 
     public void DecrementClock()

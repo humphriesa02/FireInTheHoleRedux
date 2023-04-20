@@ -12,6 +12,7 @@ public class GoalScript : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            SceneManager.instance.sceneOver = true;
             StartCoroutine(waitToLoadNextScene());
         }
     }

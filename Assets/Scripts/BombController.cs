@@ -29,7 +29,7 @@ public class BombController : MonoBehaviour
 
     void Update()
     {
-        if (blownUp)
+        if (blownUp || SceneManager.instance.sceneOver)
         {
             rb.velocity = Vector2.Lerp(rb.velocity, Vector2.zero, 0.5f);
         }
@@ -44,7 +44,10 @@ public class BombController : MonoBehaviour
             {
                 isMoving = false;
                 rb.velocity = Vector2.zero;
-                  SceneManager.instance.DecrementClock();
+                if(SceneManager.instance.currentDurability < SceneManager.instance.maxDurability)
+                {
+                    SceneManager.instance.DecrementClock();
+                }
             }
 
             if (Input.GetMouseButtonDown(0) && !isMoving)
@@ -65,15 +68,13 @@ public class BombController : MonoBehaviour
                 float dragPercentage = dragDistance / maxDragDistance;
                 print(dragPercentage);
                 power = Mathf.Clamp(dragPercentage * powerMultiplier, 0f, maxPower);
-                //print(power);
 
                 lineRenderer.enabled = true;
                 lineRenderer.SetPosition(0, transform.position);
                 float maxDistance = 0.5f * ((power / maxPower) * maxDragDistance);
-                print(maxDistance);
                 Vector3 direction = (dragStartPosition - dragEndPosition).normalized;
                 Vector3 secondPos = transform.position + direction * Mathf.Clamp(dragDistance, 0, maxDistance);
-                print(secondPos);
+ 
                 lineRenderer.SetPosition(1, secondPos);
             }
 
