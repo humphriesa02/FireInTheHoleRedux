@@ -10,6 +10,8 @@ public class CameraController : MonoBehaviour
     public float maxZoom = 15f; // The maximum zoom level
     public float zoomSpeed = 5f; // The speed at which the camera zooms in and out
     public float cameraDragSpeed = 5;
+    public float shakeMagnitude;
+    public float shakeDuration;
 
     private Camera cam; // The Camera component
     private Vector3 initialPosition; // The initial position of the camera
@@ -72,6 +74,32 @@ public class CameraController : MonoBehaviour
         // Zoom in and out
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         cam.orthographicSize = Mathf.Clamp(cam.orthographicSize - scroll * zoomSpeed, minZoom, maxZoom);   
+    }
+
+
+    public IEnumerator Shake()
+    {
+        Vector3 originalPosition = transform.position;
+        float elapsed = 0f;
+
+        while (elapsed < shakeDuration)
+        {
+            elapsed += Time.deltaTime;
+
+            float percentComplete = elapsed / shakeDuration;
+            float damper = 1f - Mathf.Clamp(2f * percentComplete - 1f, 0f, 1f);
+
+            float x = Random.value * 2f - 1f;
+            float y = Random.value * 2f - 1f;
+            x *= shakeMagnitude * damper;
+            y *= shakeMagnitude * damper;
+
+            transform.position = new Vector3(originalPosition.x + x, originalPosition.y + y, originalPosition.z);
+
+            yield return null;
+        }
+
+        transform.position = originalPosition;
     }
 }
 

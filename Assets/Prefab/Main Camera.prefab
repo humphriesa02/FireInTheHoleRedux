@@ -124,3 +124,5 @@ MonoBehaviour:
   maxZoom: 15
   zoomSpeed: 5
   cameraDragSpeed: 25
+  shakeMagnitude: 0.5
+  shakeDuration: 0.5
