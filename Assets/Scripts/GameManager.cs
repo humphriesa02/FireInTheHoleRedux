@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
     public float totalTimeSpentInGame;
     public int totalLivesLost;
     public string currentScene;
+    public int currentLives = 3;
+    public AudioSource soundEffectSource;
+    public SoundEffectManager soundEffects;
 
     private void Awake()
     {
@@ -27,7 +30,7 @@ public class GameManager : MonoBehaviour
         
     }
 
-    public void loseCurrentLevel()
+    public void loseGame()
     {
 
     }

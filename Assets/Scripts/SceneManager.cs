@@ -40,7 +40,7 @@ public class SceneManager : MonoBehaviour
         sceneTime = 0;
         currentTime = timeLimit;
         currentDurability = maxDurability;
-        currentLives = maxLives;
+        currentLives = GameManager.instance.currentLives;
         lastTime = Time.time;
         bomb = GameObject.FindGameObjectWithTag("Player").GetComponent<BombController>();
         sceneOver = false;
@@ -63,7 +63,8 @@ public class SceneManager : MonoBehaviour
 
     public void LoseLife()
     {
-        currentLives--;
+        GameManager.instance.currentLives--;
+        currentLives = GameManager.instance.currentLives;
         sceneLives++;
         if(currentLives == 0)
         {

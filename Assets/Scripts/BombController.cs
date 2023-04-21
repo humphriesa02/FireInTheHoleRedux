@@ -19,12 +19,14 @@ public class BombController : MonoBehaviour
     private bool blownUp = false;
 
     public LineRenderer lineRenderer;
+    private SpriteRenderer spriteRenderer;
 
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -91,7 +93,6 @@ public class BombController : MonoBehaviour
             }
         }
         
-
         SetAnimation();
     }
 
@@ -109,6 +110,7 @@ public class BombController : MonoBehaviour
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
             rb.AddForce(direction * power);
+            GameManager.instance.soundEffectSource.PlayOneShot(GameManager.instance.soundEffects.hit);
         }
     }
 
@@ -120,6 +122,7 @@ public class BombController : MonoBehaviour
     public void BlowUp()
     {
         // Play blowup sound
+        GameManager.instance.soundEffectSource.PlayOneShot(GameManager.instance.soundEffects.explosion);
         // Show explosion animation
         // Decrement scene totalLives
         // Reset position
