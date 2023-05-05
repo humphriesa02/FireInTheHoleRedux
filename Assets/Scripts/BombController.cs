@@ -41,6 +41,13 @@ public class BombController : MonoBehaviour
             {
                 isMoving = true;
                 rb.freezeRotation = true;
+
+                // Calculate the direction of the velocity vector
+                Vector2 direction = rb.velocity.normalized;
+                // Calculate the angle from the direction vector
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                // Set the rotation of the bomb to match the direction of the velocity vector
+                transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
             }
             else if (Vector2.Distance(rb.velocity, Vector2.zero) <= 0.7f) // Bomb is stopped
             {
@@ -111,6 +118,8 @@ public class BombController : MonoBehaviour
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
             rb.AddForce(direction * power);
             GameManager.instance.soundEffectSource.PlayOneShot(GameManager.instance.soundEffects.hit);
+
+            StartCoroutine(BombSqueeze(1.5f, 0.2f, 0.05f));
         }
     }
 
@@ -121,11 +130,9 @@ public class BombController : MonoBehaviour
 
     public void BlowUp()
     {
-        // Play blowup sound
         GameManager.instance.soundEffectSource.PlayOneShot(GameManager.instance.soundEffects.explosion);
-        // Show explosion animation
-        // Decrement scene totalLives
-        // Reset position
+        transform.rotation = Quaternion.Euler(0, 0, 0);
+        transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
         blownUp = true;
         StartCoroutine(WaitToReset());
     }
@@ -138,8 +145,34 @@ public class BombController : MonoBehaviour
         yield return new WaitForSeconds(delayBetweenLives);
         SceneManager.instance.LoseLife();
         blownUp = false;
+        // Modify explosion properties
+        transform.rotation = Quaternion.Euler(0, 0, 90);
+        transform.localScale = Vector3.one;
+
         anim.Play("BombIdle");
         StopCoroutine(WaitToReset());
         StopCoroutine(shake);
+    }
+
+    // Adapted from Press Start on Youtube
+    IEnumerator BombSqueeze(float xSqueeze, float ySqueeze, float seconds)
+    {
+        Vector3 originalSize = Vector3.one;
+        Vector3 newSize = new Vector3(xSqueeze, ySqueeze, originalSize.z);
+        float t = 0f;
+        while (t <= 2.0)
+        {
+            t += Time.deltaTime / seconds;
+            transform.localScale = Vector3.Lerp(originalSize, newSize, t);
+            yield return null;
+        }
+        t = 0f;
+        while (t <= 2.0)
+        {
+            t += Time.deltaTime / seconds;
+            transform.localScale = Vector3.Lerp(newSize, originalSize, t);
+            yield return null;
+        }
+
     }
 }

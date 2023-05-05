@@ -3878,14 +3878,14 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 181
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -3975,8 +3975,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f19c5b23be1671847926d3da8ee070ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosion: {fileID: 8300000, guid: 2e2b7248f6c7f064c90992211580ec31, type: 3}
-  hit: {fileID: 8300000, guid: d9f18eef8e9d41c428c1bd21a519b40b, type: 3}
+  explosion: {fileID: 8300000, guid: 9e50a58a24ba68b459d3d1cfacb2b937, type: 3}
+  hit: {fileID: 8300000, guid: 124712e126c559a4d9a5f2f8c2a80db3, type: 3}
+  bombInHole: {fileID: 8300000, guid: 8354539a74f28bf44ae5e99bd52d9239, type: 3}
+  bounce: {fileID: 8300000, guid: 6f27f91329407bf4baee4613a86d314c, type: 3}
 --- !u!1 &1146206106
 GameObject:
   m_ObjectHideFlags: 0
@@ -4042,13 +4044,13 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 27a16638482361c428a39ed77c08f548, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 70
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -4138,6 +4140,7 @@ GameObject:
   - component: {fileID: 1691949275}
   - component: {fileID: 1691949274}
   - component: {fileID: 1691949276}
+  - component: {fileID: 1691949277}
   m_Layer: 0
   m_Name: SecondaryLayer
   m_TagString: Untagged
@@ -4717,6 +4720,18 @@ TilemapCollider2D:
   m_Offset: {x: 0, y: 0}
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
+--- !u!114 &1691949277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1691949272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18272272db0f7145b1640ef48f18384, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1922431629 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2478968649776349850, guid: edcdd273b22698a42a1a2ed074d7c271, type: 3}
