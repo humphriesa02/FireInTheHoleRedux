@@ -8,4 +8,5 @@ public class SoundEffectManager : MonoBehaviour
     public AudioClip hit;
     public AudioClip bombInHole;
     public AudioClip bounce;
+    public AudioClip grannyDeath;
 }

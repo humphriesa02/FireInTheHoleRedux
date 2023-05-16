@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GrannyRegular : MonoBehaviour
 {
@@ -8,6 +9,10 @@ public class GrannyRegular : MonoBehaviour
     public Vector2 startingDirection;
     Vector2 currentDirection;
     public float timeBetweenDirectionChange;
+    public float yMaxLimit;
+    public float yMinLimit;
+    public TextMeshProUGUI granniesKilledText;
+    public GameObject howCouldYou;
     Animator anim;
     Rigidbody2D rb;
     public float startingWalkTime;
@@ -26,34 +31,36 @@ public class GrannyRegular : MonoBehaviour
     {
         if(currentWalkTime <= 0)
         {
-            StartCoroutine(PickNewDirection());
+            currentDirection.x += 1f;
+            currentDirection.y += 1f;
+
+            if (currentDirection.x > 1f)
+                currentDirection.x = -1f;
+            if (currentDirection.y > 1f)
+                currentDirection.y = -1f;
+            print(currentDirection);
+            currentWalkTime = startingWalkTime;
         }
         else
         {
             currentWalkTime -= Time.deltaTime;
             rb.velocity = currentDirection * speed * Time.deltaTime;
+            transform.position = new Vector2(transform.position.x, Mathf.Clamp(transform.position.y, yMinLimit, yMaxLimit));
             anim.SetFloat("move_x", currentDirection.x);
             anim.SetFloat("move_y", currentDirection.y);
         }   
     }
 
-    private IEnumerator PickNewDirection()
-    {
-        currentWalkTime = startingWalkTime;
-        yield return new WaitForSeconds(timeBetweenDirectionChange);
-        float randomX = Random.Range(-1, 1);
-        float randomY = Random.Range(-1, 1);
-        currentDirection = new Vector2(randomX, randomY);
-        StopAllCoroutines();
-    }
-
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
         print(collision.gameObject.name);
         if (collision.gameObject.CompareTag("Player"))
         {
             collision.gameObject.GetComponent<BombController>().BlowUp();
-            Destroy(this);
+            GameManager.instance.soundEffectSource.PlayOneShot(GameManager.instance.soundEffects.grannyDeath);
+            granniesKilledText.text = "1";
+            howCouldYou.SetActive(true);
+            Destroy(this.gameObject);
         }
     }
 }

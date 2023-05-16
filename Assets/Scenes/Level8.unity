@@ -8191,9 +8191,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76cb8ef00915d5a46aea33dbdad81386, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 45
+  speed: 150
   startingDirection: {x: 1, y: 0}
   timeBetweenDirectionChange: 0.5
+  yMaxLimit: 8.5
+  yMinLimit: 0.5
   startingWalkTime: 4
 --- !u!212 &1832828403
 SpriteRenderer:
@@ -8255,7 +8257,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1832828401}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.13032356, y: 4.5804973, z: 0}
+  m_LocalPosition: {x: -0.42, y: 3.78, z: 0}
   m_LocalScale: {x: 1.25, y: 1.25, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
